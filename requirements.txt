@@ -1,0 +1,33 @@
+# API Framework
+fastapi>=0.103.0
+uvicorn>=0.22.0
+
+# Database
+sqlalchemy>=2.0.0
+alembic>=1.11.0
+psycopg2-binary>=2.9.0
+
+# Authentication
+python-jose>=3.3.0
+passlib>=1.7.4
+python-multipart>=0.0.6
+
+# Testing
+pytest>=7.3.0
+pytest-cov>=4.1.0
+httpx>=0.24.0
+
+# BDD Testing
+behave>=1.2.6
+selenium>=4.9.0
+
+# Development
+black>=23.3.0
+flake8>=6.0.0
+
+# Docker
+docker>=6.1.0
+
+# Configuration
+pydantic-settings>=2.0.0
+pydantic[email]>=2.11.4
