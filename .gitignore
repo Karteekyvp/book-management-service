@@ -42,3 +42,9 @@ htmlcov/
 # Docker
 .docker/
 
+# macOS junk
+.DS_Store
+
+# Archives
+*.zip
+
