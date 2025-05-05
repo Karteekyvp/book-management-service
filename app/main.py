@@ -1,38 +1,38 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import settings
 from app.db.init_db import init_db
-from app.api.v1 import api_router
+from app.api.v1.auth import router as auth_router
+from app.api.v1.book import router as book_router
 
-# Initialize app
 app = FastAPI(
-    title=settings.PROJECT_NAME,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json"
+    title="Book Management API",
+    description="An API to manage books with user authentication",
+    version="1.0.0",
 )
 
-# Set up CORS
+# Allow all CORS for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For development - restrict in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Initialize database on startup
+# Initialize DB on startup
 @app.on_event("startup")
 def startup_db_client():
     init_db()
 
-# Include API router
-app.include_router(api_router, prefix=settings.API_V1_STR)
-
-
+# Root route
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Book Management API"}
 
+# Routers
+app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
+app.include_router(book_router, prefix="/api", tags=["books"])
 
 if __name__ == "__main__":
     import uvicorn

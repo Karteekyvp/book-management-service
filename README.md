@@ -1,188 +1,290 @@
-# 📚 Book Management API (Built with FastAPI & PostgreSQL)
+# 📚 Book Management API — Built with FastAPI, PostgreSQL, Docker
 
-Welcome! This project is a **Book Management API** — a small web service that lets you:
-- Register and log in securely
-- Add your favorite books
-- Search them by title, author, or genre
-- Edit or delete them when needed
+Welcome to your **complete Book Management Microservice** — built from scratch using FastAPI, SQLAlchemy, PostgreSQL, JWT authentication, Pytest, and Docker.
 
-It works kind of like your own little online library.
-
----
-
-## 🧠 What’s This All About?
-
-Imagine you're keeping track of your favorite books — their titles, authors, genres, ISBN numbers — all in a digital app. But instead of a big, clunky website, this app talks in a language that other apps understand: **APIs**.
-
-You can:
-- 📥 Add books you love
-- 📖 List all the books in your collection
-- 🕵️‍♀️ Search books by keywords
-- ✏️ Edit their details
-- ❌ Delete them
-- 🔒 Keep everything secure by requiring login
-
-Even better — this API could be plugged into a website, mobile app, or even used by another team at work.
+This README walks you through:
+- ✅ What this project does
+- 🧱 How it's designed
+- 🛠️ How to set it up
+- 🔐 How to use secure APIs
+- 🧪 How to test it
+- 🐳 How to Dockerize it
+- 🚀 How to prepare for CI/CD & cloud deployment
 
 ---
 
-## 🛠️ What Technologies Were Used?
+## 📖 What Does This App Do?
 
-| Tool | Purpose |
-|------|---------|
-| **FastAPI** | The brain – handles all the user instructions (API calls). |
-| **PostgreSQL** | The memory – stores all your books and users. |
-| **SQLAlchemy** | The translator – connects FastAPI to the database. |
-| **JWT** | The security pass – lets users access their data safely. |
-| **Docker** | The lunchbox – packages the whole thing to run anywhere easily. |
-| **Pytest + Behave** | Testing tools – to make sure everything works as expected. |
-
----
-
-## 🧾 Features
-
-- ✅ Secure user registration and login
-- 📘 CRUD for books (Create, Read, Update, Delete)
+Think of it like a **digital bookshelf** you can:
+- 🔑 Log in to securely
+- ➕ Add books
+- 📚 View your collection
 - 🔍 Search by title, author, or genre
-- 🔐 JWT-based authentication for protected routes
-- 📚 Auto-generated API documentation with Swagger UI at `/docs`
-- 🐳 Docker support for consistent environments
-- 🧪 Testing with unit tests (`pytest`) and behavior-driven tests (`behave`)
+- ✏️ Edit book info
+- ❌ Delete books
+
+Everything is stored in a **PostgreSQL database**, and every action goes through a clean, fast **REST API**.
 
 ---
 
-## 🖼️ How It Works – A Day in the Life of the API
+## 🧱 Architecture Overview
 
-### Imagine Ravi logs in:
-1. 🔑 He registers an account.
-2. 🪪 He logs in using his credentials.
-3. 📗 He adds a few books like *The Alchemist* and *To Kill a Mockingbird*.
-4. 🔍 He searches for all books by author "Paulo Coelho".
-5. ✏️ He fixes a typo in one of the book titles.
-6. ❌ He deletes a book he’s no longer interested in.
-
-Each of these steps is handled by a specific **API endpoint**. The system is smart, fast, and secure.
-
----
-
-## ⚙️ Project Folder Structure
-
-```
-book_management_service/
-├── app/
-│   ├── api/          # API route definitions (URLs)
-│   ├── auth/         # JWT token creation, password hashing, current user
-│   ├── db/           # Database connection and setup scripts
-│   ├── models/       # SQLAlchemy models for Book and User
-│   ├── schemas/      # Pydantic models for request and response formats
-│   ├── config.py     # Environment variables and settings loader
-│   └── main.py       # Main app bootstrapper
-├── docker-compose.yml  # PostgreSQL setup using Docker
-├── requirements.txt     # Required Python libraries
-└── README.md
-```
+| Layer         | Description                                       |
+|---------------|---------------------------------------------------|
+| API Layer     | FastAPI endpoints (clean, async, auto-documented) |
+| Auth Layer    | Secure user login with JWT                        |
+| Data Layer    | SQLAlchemy models and DB access                   |
+| DB            | PostgreSQL (runs in Docker)                       |
+| Security      | OAuth2 + JWT tokens                               |
+| Testing       | Pytest (unit) + Behave (BDD)                      |
+| DevOps Ready  | Docker + env vars + GitHub Actions ready          |
 
 ---
 
-## 🚀 Getting Started (Step-by-Step)
+## 🔧 Setup Guide — Step-by-Step
 
-### 1. Clone the Project
+### 🔹 1. Clone the Project
 ```bash
 git clone https://github.com/yeluru/book_management_service.git
 cd book_management_service
 ```
 
-### 2. Set Up a Python Environment
+### 🔹 2. Create Python Virtual Environment
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Mac/Linux
 ```
 
-### 3. Install Required Libraries
+### 🔹 3. Install Requirements
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Start the PostgreSQL Database Using Docker
+### 🔹 4. Start PostgreSQL with Docker
 ```bash
 docker-compose up -d
 ```
 
-This spins up a PostgreSQL container in the background. Think of it as turning on a smart notebook to save all your data.
+> This starts a PostgreSQL container at `localhost:5432` with:
+> - user: `postgres`
+> - password: `postgres`
+> - db: `book_management`
 
-### 5. Run the API
+---
+
+## ⚙️ Run the App
+
+### ✅ Run FastAPI Server
 ```bash
 python -m app.main
 ```
 
-Open in your browser:
-- `http://localhost:8000` → Welcome message
-- `http://localhost:8000/docs` → Swagger UI to explore and test APIs interactively
+- Visit: `http://localhost:8000`
+- Docs: `http://localhost:8000/docs` (Swagger UI)
 
 ---
 
-## 🔐 Authentication Overview
+## 🔐 Auth Flow
 
-All book operations (add/edit/delete) require authentication.
+| Action         | API Endpoint                |
+|----------------|-----------------------------|
+| Register       | `POST /api/v1/auth/register` |
+| Login          | `POST /api/v1/auth/login`    |
+| Protected APIs | Use `Authorization: Bearer <token>` header |
 
-1. Register: `POST /api/auth/register`
-2. Login: `POST /api/auth/login`  
-   (returns a JWT token)
-
-3. Use the token in future requests:
-```
-Authorization: Bearer <your_token>
-```
+You must **log in first** to receive a token. Use that token to:
+- Add/update/delete books
+- Access private endpoints
 
 ---
 
-## 🧪 Running Tests
+## 📘 Book Endpoints
 
-### Unit Tests (code-level testing)
+| Operation     | Method & Path              | Auth Required |
+|---------------|----------------------------|---------------|
+| Add Book      | POST `/api/v1/books`       | ✅ Yes         |
+| Get All Books | GET `/api/v1/books`        | ✅ Yes         |
+| Get One Book  | GET `/api/v1/books/{id}` | ✅ Yes         |
+| Update Book   | PUT `/api/v1/books/{id}` | ✅ Yes         |
+| Delete Book   | DELETE `/api/v1/books/{id}` | ✅ Yes       |
+
+---
+
+## 🧪 Testing
+
+### ▶️ Run Unit Tests
 ```bash
 pytest
 ```
 
-### BDD Tests (user behavior stories)
+### 🧬 Run BDD Tests
 ```bash
 behave
 ```
 
-These ensure the system behaves the way real users expect — like confirming login works or book creation is successful.
+---
+
+## 🐳 Docker-Ready Setup
+
+> You already have a working `docker-compose.yml` for PostgreSQL.
+
+To run API inside a container (recommended in production):
+- Add `Dockerfile` (to be included soon)
+- Build + run FastAPI app
 
 ---
 
-## 📦 Docker-Friendly (Future)
+## 📂 Project Structure
 
-You already have Docker Compose for the database. You can add a `Dockerfile` to run the API server inside a container. This is great for:
-- Team collaboration
-- Cloud deployment
-- Avoiding “works on my machine” issues
-
----
-
-## 👶 Concepts Explained Simply
-
-- **API**: Like placing an order at a restaurant. You don’t cook — you just say what you want.
-- **JWT**: A magic pass. Once you log in, you get a token. Flash it for every request.
-- **Docker**: A backpack with your whole project inside. Grab it and go — it works everywhere.
-- **Database**: Like a bookshelf. It remembers every book you've added.
-
----
-
-## 📌 Future Plans
-
-- Add automated tests for all endpoints
-- Add a Dockerfile and full Docker setup
-- Deploy to AWS using GitHub Actions or Jenkins
-- Add book ratings, cover images, and user profiles
-- Support multiple languages and search filters
+```
+book_management_service/
+├── app/
+│   ├── api/v1/       # All API endpoints (auth, book)
+│   ├── auth/         # JWT creation and verification
+│   ├── db/           # Database setup and connection
+│   ├── models/       # SQLAlchemy DB models
+│   ├── schemas/      # Request & response validation
+│   ├── config.py     # App configuration
+│   └── main.py       # App entry point
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-## 🧑‍💻 Built With 💛 by Ravi
+## 💡 Explained Like You're 10
 
-This project was built as a real-world, end-to-end example of how to design, secure, test, and deploy a FastAPI microservice for managing books. Whether you’re a developer, student, or just curious — it’s made to be easy to understand and extend.
+- **API**: A magic window — you make a request, and it gives you what you want.
+- **JWT**: A VIP wristband you wear — once you're in, you can go anywhere.
+- **Docker**: A lunchbox that packs your project so it works anywhere.
+- **Database**: A smart notebook that never forgets.
 
-Explore it, break it, build on it!
+---
 
+## 🚀 CI/CD & Deployment
+
+### 💡 Future Enhancements:
+- Add `Dockerfile` and deploy full stack with Docker Compose
+- Add GitHub Actions for test → build → deploy
+- Deploy backend on EC2, Lambda, or ECS
+- Add search query param: `/api/v1/books/search?q=python`
+- Add cover images & book reviews
+
+---
+
+## 👨‍💻 Author
+
+Built with 💛 by Ravi  
+_“For learners, by learners.”_
+
+---
+
+_Last updated: 2025-05-05_
+
+---
+
+## 🗂️ File-by-File Explanation (What Does Each File Do?)
+
+### 📁 `app/`
+
+#### `main.py`
+The entry point of the app. It creates the FastAPI application, connects all the routers (auth + books), adds CORS (security headers), and runs database setup on startup.
+
+#### `config.py`
+Stores environment variables (like database URLs or token expiration times). Think of this as the app’s settings file.
+
+---
+
+### 📁 `auth/`
+
+#### `__init__.py`
+Shortcut to expose key functions from `jwt.py`, so other parts of the app can easily import `get_current_user` and token tools.
+
+#### `jwt.py`
+Handles all authentication:
+- Hashes passwords using bcrypt
+- Verifies login passwords
+- Generates secure tokens (JWTs)
+- Extracts users from those tokens
+
+This is the **digital security system** of the app.
+
+---
+
+### 📁 `db/`
+
+#### `database.py`
+Sets up the connection to PostgreSQL using SQLAlchemy. Defines the base class for models and provides a function to open/close DB sessions.
+
+#### `init_db.py`
+Creates all database tables when the app starts up. Think of this as your database “setup crew”.
+
+---
+
+### 📁 `models/`
+
+#### `user.py`
+Defines what a user looks like in the database (id, email, password, created_at). It also links users to their books.
+
+#### `book.py`
+Defines what a book looks like (title, author, genre, etc.). Each book is linked to a user using a foreign key.
+
+#### `base.py`
+A shared base class for all models. Sets automatic timestamps and handles table naming.
+
+---
+
+### 📁 `schemas/`
+
+#### `user.py`
+Defines data formats for:
+- Registering a user
+- Logging in
+- Returning user info
+- Generating JWT token payloads
+
+Uses Pydantic to validate everything.
+
+#### `book.py`
+Defines what book data should look like when:
+- Creating a book
+- Updating a book
+- Returning a book (as response)
+
+This ensures the data stays clean and consistent.
+
+---
+
+### 📁 `api/v1/`
+
+#### `__init__.py`
+Organizes all version 1 endpoints under one router (`api_router`). Adds both auth and book routers.
+
+#### `auth.py`
+Contains `/register` and `/login` routes:
+- Verifies user existence
+- Hashes passwords
+- Returns JWT token on successful login
+
+#### `book.py`
+Contains:
+- `POST /books` → Add a book
+- `GET /books` → List all books
+- `GET /books/{id}` → Get one
+- `PUT /books/{id}` → Edit a book
+- `DELETE /books/{id}` → Remove it
+
+Every route requires the user to be logged in with a valid token.
+
+---
+
+### 🐳 `docker-compose.yml`
+Sets up and runs PostgreSQL in a container with default credentials.
+
+---
+
+### 📄 `requirements.txt`
+Lists all required Python libraries to make the app work.
+
+---
