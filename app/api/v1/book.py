@@ -4,13 +4,14 @@ from typing import List
 
 from app.db.database import get_db
 from app.models.book import Book
-from app.schemas.book import BookCreate, BookUpdate, Book
+from app.schemas.book import BookCreate, BookUpdate, Book as BookSchema
+from app.models.book import Book
 from app.auth import get_current_user
 from app.models.user import User
 
 router = APIRouter()
 
-@router.post("/books", response_model=Book)
+@router.post("/books", response_model=BookSchema)
 def create_book(
     book: BookCreate,
     db: Session = Depends(get_db),
@@ -24,7 +25,7 @@ def create_book(
     return new_book
 
 
-@router.get("/books", response_model=List[Book])
+@router.get("/books", response_model=List[BookSchema])
 def read_books(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -33,7 +34,7 @@ def read_books(
     return db.query(Book).filter(Book.user_id == current_user.id).all()
 
 
-@router.get("/books/{book_id}", response_model=Book)
+@router.get("/books/{book_id}", response_model=BookSchema)
 def read_book(
     book_id: int,
     db: Session = Depends(get_db),
@@ -46,7 +47,7 @@ def read_book(
     return book
 
 
-@router.put("/books/{book_id}", response_model=Book)
+@router.put("/books/{book_id}", response_model=BookSchema)
 def update_book(
     book_id: int,
     book_update: BookUpdate,
